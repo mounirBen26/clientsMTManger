@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 import About from './screens/about';
 import Home from './screens/home';
+import AddItem from './screens/addItem';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { AntDesign } from '@expo/vector-icons';
@@ -15,6 +16,7 @@ export default function App() {
     <NavigationContainer>
       <Tab.Navigator>
         <Tab.Screen name="Home" component={Home} options={{ tabBarIcon: () => <AntDesign name="home" size={24} color="black" /> }} />
+        <Tab.Screen name="AddItem" component={AddItem} options={{ tabBarIcon: () => <AntDesign name="plus" size={24} color="black" /> }} />
         <Tab.Screen name="About" component={About} options={{ tabBarIcon: () => <MaterialIcons name="info-outline" size={24} color="black" /> }} />
       </Tab.Navigator>
     </NavigationContainer>

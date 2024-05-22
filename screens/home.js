@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, FlatList } from 'react-native'
 import React from 'react'
-import { Searchbar } from 'react-native-paper';
+import { Searchbar, Divider} from 'react-native-paper';
 
 const data = [
     { id: '1', name: 'Item 1' },
@@ -31,9 +31,12 @@ const Home = () => {
       />
       <Text>Items List</Text>
       <FlatList
+      showsHorizontalScrollIndicator={false}
       data={data}
       renderItem={renderItem}
       keyExtractor={(item) => item.id}
+      ItemSeparatorComponent={Divider}
+
     />
     </View>
     );
@@ -54,7 +57,7 @@ const styles = StyleSheet.create({
         height: 'auto',
     },
     item: {
-        backgroundColor: '#f9c2ff',
+        backgroundColor: '#ACE1AF',
         padding: 4,
         marginVertical: 8,
         marginHorizontal: 16,
