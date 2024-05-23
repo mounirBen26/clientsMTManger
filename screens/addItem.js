@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
 
 const AddItem = () => {
   const [contract, setContract] = useState('');
@@ -69,6 +69,10 @@ const AddItem = () => {
         value={tp}
         onChangeText={setTp}
       />
+
+      <TouchableOpacity style={styles.button}>
+        <Text style={styles.buttonText}>Ajouter</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -87,7 +91,19 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginVertical: 2,
     paddingHorizontal: 8,
+    borderRadius: 6,
+  },
+  button: {
+    backgroundColor: '#50C878',
+    padding: 10,
     borderRadius: 8,
+    width: '80%',
+    marginTop: 4,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
 
