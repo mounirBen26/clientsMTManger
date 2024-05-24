@@ -1,63 +1,102 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../firebase';
 import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native';
 import { Searchbar, Divider,IconButton } from 'react-native-paper';
 import { Dimensions } from 'react-native';
-import WavyHeader from './wavyHeader';
+import AboutSvg from './aboutSvg';
+import { WaveIndicator,BallIndicator} from 'react-native-indicators';
+import { Feather } from '@expo/vector-icons';
 
-const data = [
-  { id: '1', name: 'Item 1', field1: 'Field 1 Value 1', field2: 'Field 2 Value 1', field3: 'Field 3 Value 1' },
-  { id: '2', name: 'Item 2', field1: 'Field 1 Value 2', field2: 'Field 2 Value 2', field3: 'Field 3 Value 2' },
-  { id: '3', name: 'Item 3', field1: 'Field 1 Value 3', field2: 'Field 2 Value 3', field3: 'Field 3 Value 3' },
-  { id: '4', name: 'Item 4', field1: 'Field 1 Value 4', field2: 'Field 2 Value 4', field3: 'Field 3 Value 4' },
-  { id: '5', name: 'Item 5', field1: 'Field 1 Value 5', field2: 'Field 2 Value 5', field3: 'Field 3 Value 5' },
-  { id: '6', name: 'Item 6', field1: 'Field 1 Value 6', field2: 'Field 2 Value 6', field3: 'Field 3 Value 6' },
-  { id: '7', name: 'Item 7', field1: 'Field 1 Value 7', field2: 'Field 2 Value 7', field3: 'Field 3 Value 7' },
-  { id: '8', name: 'Item 8', field1: 'Field 1 Value 8', field2: 'Field 2 Value 8', field3: 'Field 3 Value 8' },
-  { id: '9', name: 'Item 9', field1: 'Field 1 Value 9', field2: 'Field 2 Value 9', field3: 'Field 3 Value 9' },
-  { id: '10', name: 'Item 10', field1: 'Field 1 Value 10', field2: 'Field 2 Value 10', field3: 'Field 3 Value 10' },
- 
-];
 
 const Home = () => {
   const [text, setText] = React.useState('');
   const [expandedItem, setExpandedItem] = useState(null);
-    console.log('----->',expandedItem)
+  const [clients, setClients] = useState([]);
+  const [searchText, setSearchText] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+
+  
+
+  useEffect(() => {
+    const fetchClients = async () => {
+      try {
+        const clientsCollection = collection(db, 'clientsdb');
+        const querySnapshot = await getDocs(clientsCollection);
+        const clientsData = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        setClients(clientsData);
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Error fetching clients:', error);
+        setIsLoading(false);
+      }
+    };
+    fetchClients();
+  }, []);
+  function handleItemPress(item) {
+    navigation.navigate('DetailItem', { item });
+  }
+
+  function resetSearchInput() {
+    setSearchText('');
+  }
+  const filteredClients = clients.filter((client) =>
+    client.Num_contrat !== undefined &&
+    client.intitule !== undefined &&
+    client.Num_compteur !== undefined &&
+    (client.Num_contrat.toString().includes(searchText) || client.intitule.toString().toLowerCase().includes(searchText.toLowerCase()) || client.Num_compteur.toString().includes(searchText) )
+  );
+
+  // console.log('----->',expandedItem)
   const renderItem = ({ item }) => (
     <TouchableOpacity
       style={styles.item}
       onPress={() => setExpandedItem(item.id === expandedItem ? null : item.id)}
     >
-      <Text style={styles.text}>{item.name}</Text>
+      <Text style={styles.text}>Contrat: {item.Num_contrat}</Text>
+      <Text style={styles.text}>Intitulé: {item.intitule}</Text>
       {expandedItem === item.id && (
-        <>
-          <Text style={styles.text}>{item.field1}</Text>
-          <Text style={styles.text}>{item.field2}</Text>
-          <Text style={styles.text}>{item.field3}</Text>
-          <IconButton icon="folder-edit"  onPress={() => setExpandedItem(null)} />
-        </>
+        <View style={styles.itemContent}>
+          <Text style={styles.text}>Addresse: {item.Adresse}</Text>
+          <Text style={styles.text}>N° Compteur: {item.Num_compteur}</Text>
+          <Text style={styles.text}>N° Puce: {item.Num_puce}</Text>
+          <Text style={styles.text}>Type: {item.Type}</Text>
+          <Text style={styles.text}>PMD: {item.PMD} KW</Text>
+          <Text style={styles.text}>TC: {item.TC}</Text>
+          {item.TP === '-'? (''): (<Text style={styles.text}>TP: {item.TP}</Text>)}
+          <Text style={styles.text}>Crée le: {item.CREATION}</Text>
+          <View style={{ position: 'absolute', right: 10, top: 50 }}><Feather name="edit" size={24} color="green" /></View>
+          
+        </View>
       )}
     </TouchableOpacity>
   );
 
   return (
     <View style={styles.container}>
-      <WavyHeader customStyles={styles.curyStyles}/>
+      <AboutSvg customStyles={styles.curyStyles}/>
       <Searchbar
         style={styles.searchBar}
         placeholder="Recherche"
-        value={text}
-        onChangeText={(text) => setText(text)}
+        onChangeText={setSearchText}
+        value={searchText}
         mode="bar"
       />
-      <Text style={{color:'white', fontSize:20, fontWeight:'bold'}}>Items List</Text>
-      <FlatList
-        showsHorizontalScrollIndicator={false}
-        showsVerticalScrollIndicator={false}
-        data={data}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        ItemSeparatorComponent={Divider}
-      />
+      <Text style={styles.railway}>Client Manager</Text>
+      {isLoading ? (
+        <BallIndicator  color="#0000ff" />
+      ) : (
+        <FlatList style={{ maxHeight: '76%', borderRadius: 16 }}
+          showsVerticalScrollIndicator={false}
+          data={filteredClients}
+          keyExtractor={(item) => item.id}
+          renderItem={renderItem}
+          ListEmptyComponent={() => <Text style={{  fontSize: 18,fontFamily:'TitilliumWeb_400Regular'}}>Aucun client n'a été trouvé.</Text>}
+          ListHeaderComponent={<View style={{ height: 10 }} />}
+          ListFooterComponent={<View style={{ height: 10 }} />}
+          ItemSeparatorComponent={() => <View style={{ height: 1 }} />}
+        />
+      )}
     </View>
   );
 };
@@ -67,29 +106,49 @@ export default Home;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F7F9F9',
+    backgroundColor: '#e4e4F4',
     alignItems: 'center',
     
   },
   searchBar: {
     width: '90%',
     height: 'auto',
-    marginVertical: 30,
+    marginTop: 30,
+
   },
   item: {
     backgroundColor: 'white',
-    padding: 6,
-    marginVertical: 8,
+    padding: 10,
+    // marginVertical: 4,
     marginHorizontal: 16,
-    borderRadius: 4,
+    // borderRadius: 5,
     width: 300,
+    elevation: 0,
   },
   text: {
-    fontSize: 18,
+    fontSize: 14,
+    fontFamily:'TitilliumWeb_400Regular',
   },
   curyStyles: {
     position: 'absolute',
     width: Dimensions.get('window').width,
+  },
+  separator: {
+    width: '80%', 
+    alignSelf: 'center',
+    color:'red'
+  },
+  itemContent: {
+    marginTop: 10,
+    backgroundColor:'#e9ecef',
+    padding: 5,
+    borderRadius: 10,
+  },
+  railway: {
+    fontSize: 20,
 
-  }
+    marginVertical: 30,
+    color: "black",
+    fontFamily:'TitilliumWeb_400Regular'
+  },
 });
