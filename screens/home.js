@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native';
-import { Searchbar, Divider } from 'react-native-paper';
+import { Searchbar, Divider,IconButton } from 'react-native-paper';
+import { Dimensions } from 'react-native';
+import WavyHeader from './wavyHeader';
 
 const data = [
   { id: '1', name: 'Item 1', field1: 'Field 1 Value 1', field2: 'Field 2 Value 1', field3: 'Field 3 Value 1' },
@@ -13,6 +15,7 @@ const data = [
   { id: '8', name: 'Item 8', field1: 'Field 1 Value 8', field2: 'Field 2 Value 8', field3: 'Field 3 Value 8' },
   { id: '9', name: 'Item 9', field1: 'Field 1 Value 9', field2: 'Field 2 Value 9', field3: 'Field 3 Value 9' },
   { id: '10', name: 'Item 10', field1: 'Field 1 Value 10', field2: 'Field 2 Value 10', field3: 'Field 3 Value 10' },
+ 
 ];
 
 const Home = () => {
@@ -30,6 +33,7 @@ const Home = () => {
           <Text style={styles.text}>{item.field1}</Text>
           <Text style={styles.text}>{item.field2}</Text>
           <Text style={styles.text}>{item.field3}</Text>
+          <IconButton icon="folder-edit"  onPress={() => setExpandedItem(null)} />
         </>
       )}
     </TouchableOpacity>
@@ -37,6 +41,7 @@ const Home = () => {
 
   return (
     <View style={styles.container}>
+      <WavyHeader customStyles={styles.curyStyles}/>
       <Searchbar
         style={styles.searchBar}
         placeholder="Recherche"
@@ -44,9 +49,10 @@ const Home = () => {
         onChangeText={(text) => setText(text)}
         mode="bar"
       />
-      <Text>Items List</Text>
+      <Text style={{color:'white', fontSize:20, fontWeight:'bold'}}>Items List</Text>
       <FlatList
         showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
         data={data}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
@@ -61,23 +67,29 @@ export default Home;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#F7F9F9',
     alignItems: 'center',
-    justifyContent: 'center',
+    
   },
   searchBar: {
     width: '90%',
     height: 'auto',
+    marginVertical: 30,
   },
   item: {
-    backgroundColor: '#ACE1AF',
-    padding: 4,
+    backgroundColor: 'white',
+    padding: 6,
     marginVertical: 8,
     marginHorizontal: 16,
     borderRadius: 4,
-    elevation: 3,
+    width: 300,
   },
   text: {
     fontSize: 18,
   },
+  curyStyles: {
+    position: 'absolute',
+    width: Dimensions.get('window').width,
+
+  }
 });
