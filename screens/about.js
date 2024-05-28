@@ -5,7 +5,11 @@ const About = () => {
   return (
     <View style={styles.container}>
       <AboutSvg customStyles={styles.curyStyles}/>
-      <Text style={{color:'black', fontSize:20, marginTop:80, fontFamily:'TitilliumWeb_400Regular'}}>Developed By: Hacene Benlazreg</Text>
+      <View style={styles.text}>
+      <Text>Developed By: Hacene Benlazreg</Text>
+      <Text >Mail: mounir.bmh@hotmail.fr</Text>
+      <Text>Version: 1.1.2</Text>
+      </View>
     </View>
   )
 }
@@ -17,8 +21,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#e4e4F4',
     alignItems: 'center',
-  
-
+  },
+  text:{
+    alignItems: 'center',
+    marginTop: 200,
+    marginBottom: 3,
+    fontFamily:'TitilliumWeb_400Regular',
   },
   curyStyles: {
     position: 'absolute',

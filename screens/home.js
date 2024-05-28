@@ -63,7 +63,7 @@ const Home = () => {
           <Text style={styles.text}>Type: {item.Type}</Text>
           <Text style={styles.text}>PMD: {item.PMD} KW</Text>
           <Text style={styles.text}>TC: {item.TC}</Text>
-          {item.TP === '-'? (''): (<Text style={styles.text}>TP: {item.TP}</Text>)}
+          {item.TP === '-' || item.TP === '' ? (''): (<Text style={styles.text}>TP: {item.TP}</Text>)}
           <Text style={styles.text}>Crée le: {item.CREATION}</Text>
           <View style={{ position: 'absolute', right: 10, top: 50 }}><Feather name="edit" size={24} color="green" /></View>
           
@@ -113,8 +113,8 @@ const styles = StyleSheet.create({
   searchBar: {
     width: '90%',
     height: 'auto',
-    marginTop: 30,
-
+    marginTop: 50,
+    fontFamily:'TitilliumWeb_400Regular',
   },
   item: {
     backgroundColor: 'white',
@@ -122,8 +122,11 @@ const styles = StyleSheet.create({
     // marginVertical: 4,
     marginHorizontal: 16,
     // borderRadius: 5,
-    width: 300,
+    width: 320,
     elevation: 0,
+    backgroundColor: "#F8F8FF",
+
+
   },
   text: {
     fontSize: 14,
@@ -146,8 +149,7 @@ const styles = StyleSheet.create({
   },
   railway: {
     fontSize: 20,
-
-    marginVertical: 30,
+    marginVertical: 20,
     color: "black",
     fontFamily:'TitilliumWeb_400Regular'
   },
