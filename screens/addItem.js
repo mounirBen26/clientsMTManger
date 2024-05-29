@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, Alert } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, Alert, Modal } from 'react-native';
 import AboutSvg from './aboutSvg';
+// import Modal from "react-native-modal";
 import { Dimensions } from 'react-native';
 import { collection, addDoc, doc } from 'firebase/firestore';
 import { db } from '../firebase';
 
-const AddItem = () => {
+
+const AddItem = ({ navigation }) => {
   const [contrat, setContrat] = useState('');
   const [intitule, setIntitule] = useState('');
   const [compteur, setCompteur] = useState('');
@@ -15,10 +17,11 @@ const AddItem = () => {
   const [type, setType] = useState('');
   const [tc, setTc] = useState('');
   const [tp, setTp] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
 
   const handleSubmit = async () => {
     if (!contrat) {
-      Alert.alert('Validation Error', 'Le champ Contrat est obligatoire.');
+      setModalVisible(true);
       return;
     }
 
@@ -28,7 +31,7 @@ const AddItem = () => {
       const month = String(today.getMonth() + 1).padStart(2, '0'); // getMonth() returns 0-11, so add 1
       const day = String(today.getDate()).padStart(2, '0'); // getDate() returns the day of the month
       const formattedDate = `${day}/${month}/${year}`; // Adjust format to "DD/MM/YYYY"
- 
+
       const docRef = await addDoc(collection(db, 'clientsdb'), {
         Adresse: adresse,
         CREATION: formattedDate,
@@ -43,7 +46,6 @@ const AddItem = () => {
         Num_compteur: compteur,
       });
       console.log('Document added successfully!', docRef.id, docRef);
-      // Assuming you have a navigation setup
       navigation.navigate('Home');
     } catch (error) {
       console.error('Error adding document: ', error);
@@ -119,6 +121,27 @@ const AddItem = () => {
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>Le champ Contrat est obligatoire.</Text>
+            <TouchableOpacity
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => setModalVisible(!modalVisible)}
+            >
+              <Text style={styles.textStyle}>OK</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -166,6 +189,39 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  buttonClose: {
+    backgroundColor: '#50C878',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
   },
 });
 

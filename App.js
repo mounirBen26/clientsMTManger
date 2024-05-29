@@ -4,8 +4,10 @@ import React from 'react';
 import About from './screens/about';
 import Home from './screens/home';
 import AddItem from './screens/addItem';
+import UpdateItem from './screens/updateItem';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
 import { AntDesign } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useFonts } from 'expo-font';
@@ -14,7 +16,27 @@ import { Quicksand_300Light } from "@expo-google-fonts/quicksand";
 import { TitilliumWeb_400Regular } from "@expo-google-fonts/titillium-web";
 
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
 
+function HomeStack(){
+  return(
+    <Stack.Navigator
+    screenOptions={{
+      headerStyle: {
+        backgroundColor: '#f0f0f4'
+      },
+      headerTitleStyle: {
+        color: 'black',
+        fontFamily: 'TitilliumWeb_400Regular',
+      },
+      headerTitleAlign: 'center',
+    }}
+    >
+      <Stack.Screen name="Home" component={Home} />
+      <Stack.Screen name="updateItem" component={UpdateItem} />
+    </Stack.Navigator>
+  )
+}
 export default function App() {
   const [fontsLoaded] = useFonts({
     Raleway_200ExtraLight,
@@ -30,18 +52,19 @@ export default function App() {
     <NavigationContainer>
       <Tab.Navigator
         screenOptions={{
-          headerStyle: {
-            backgroundColor: '#f0f0f4'
-          },
-          headerTitleStyle: {
-            color: 'black', // color of the header title
-            fontFamily: 'TitilliumWeb_400Regular',
-          },
+          headerShown: false,
+          // headerStyle: {
+          //   backgroundColor: '#f0f0f4'
+          // },
+          // headerTitleStyle: {
+          //   color: 'black', // color of the header title
+          //   fontFamily: 'TitilliumWeb_400Regular',
+          // },
         }}
       >
         <Tab.Screen 
-          name="Home" 
-          component={Home} 
+          name="HomeScreen" 
+          component={HomeStack} 
           options={{ 
             tabBarIcon: () => <AntDesign name="home" size={24} color="black" />,
             headerTitleAlign: 'center',

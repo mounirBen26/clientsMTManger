@@ -9,7 +9,7 @@ import { WaveIndicator,BallIndicator} from 'react-native-indicators';
 import { Feather } from '@expo/vector-icons';
 
 
-const Home = () => {
+const Home = ({navigation}) => {
   const [text, setText] = React.useState('');
   const [expandedItem, setExpandedItem] = useState(null);
   const [clients, setClients] = useState([]);
@@ -34,7 +34,7 @@ const Home = () => {
     fetchClients();
   }, []);
   function handleItemPress(item) {
-    navigation.navigate('DetailItem', { item });
+    navigation.navigate('updateItem', { item });
   }
 
   function resetSearchInput() {
@@ -65,8 +65,10 @@ const Home = () => {
           <Text style={styles.text}>TC: {item.TC}</Text>
           {item.TP === '-' || item.TP === '' ? (''): (<Text style={styles.text}>TP: {item.TP}</Text>)}
           <Text style={styles.text}>Crée le: {item.CREATION}</Text>
-          <View style={{ position: 'absolute', right: 10, top: 50 }}><Feather name="edit" size={24} color="green" /></View>
-          
+          <View style={{ position: 'absolute', right: 10, top: 50 }}>
+            
+            <Feather name="edit" size={24} color="green" onPress={() => handleItemPress(item)} />
+            </View>
         </View>
       )}
     </TouchableOpacity>
