@@ -7,6 +7,7 @@ import { Dimensions } from 'react-native';
 import AboutSvg from './aboutSvg';
 import { WaveIndicator,BallIndicator} from 'react-native-indicators';
 import { Feather } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 
 const Home = ({navigation}) => {
@@ -65,15 +66,20 @@ const Home = ({navigation}) => {
           <Text style={styles.text}>TC: {item.TC}</Text>
           {item.TP === '-' || item.TP === '' ? (''): (<Text style={styles.text}>TP: {item.TP}</Text>)}
           <Text style={styles.text}>Crée le: {item.CREATION}</Text>
-          <View style={{ position: 'absolute', right: 10, top: 50 }}>
-            
-            <Feather name="edit" size={24} color="green" onPress={() => handleItemPress(item)} />
-            </View>
+          <View style={{ position: 'absolute', right: 10, top:10 }}>
+            {/* <Feather name="edit" size={24} color="green" onPress={() => handleItemPress(item)} /> */}
+            <MaterialCommunityIcons name="file-edit-outline" size={24} color="green" 
+            style={{ position: 'absolute', right: 5, top:10 }} onPress={() => handleItemPress(item)} />
+            <MaterialCommunityIcons name="delete-outline" size={26} color="red" 
+            style={{position: 'absolute', right: 5, top:80}} onPress={() => handleDelete(item)} />
+          </View>
         </View>
       )}
     </TouchableOpacity>
   );
-
+  function handleDelete(item) {
+    navigation.navigate('updateItem', { item });
+  }
   return (
     <View style={styles.container}>
       <AboutSvg customStyles={styles.curyStyles}/>

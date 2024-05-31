@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 38,
-    width: '80%',
+    width: 300,
     elevation: 1,
     marginVertical: 3,
     paddingHorizontal: 8,

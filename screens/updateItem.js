@@ -2,8 +2,11 @@ import { StyleSheet, Text, View, TextInput, KeyboardAvoidingView, Platform, Scro
 import React, { useState } from 'react'
 import AboutSvg from './aboutSvg'
 import { Dimensions } from 'react-native';
+import {doc, updateDoc} from 'firebase/firestore';
+import { db } from '../firebase';
 
 const UpdateItem = ({ navigation, route }) => {
+
   const { item } = route.params;
   const [contrat, setContrat] = useState(item.Num_contrat);
   const [intitule, setIntitule] = useState(item.intitule);
@@ -14,11 +17,29 @@ const UpdateItem = ({ navigation, route }) => {
   const [type, setType] = useState(item.Type);
   const [tc, setTc] = useState(item.TC);
   const [tp, setTp] = useState(item.TP);
-  function handleSubmit(){
-    console.log(puce, pmd, compteur);
+  console.log('item', item.id);
+  const handleSubmit = async () => {
+    const docRef = doc(db, "clientsdb", item.id);
+    console.log('Updating document:', docRef.path);
+    updateDoc(docRef, {
+      Num_contrat: contrat,
+      intitule: intitule,
+      Num_compteur: Number(compteur), // Convertir en nombre compteur,
+      Adresse: adresse,
+      Num_puce: Number(puce), // Convertir en nombre puce,
+      PMD: Number(pmd), // Convertir en nombre pmd,
+      Type: type,
+      TC: tc,
+      TP: tp  
+  }
+  ).then(() => {
+    navigation.navigate('Home');
+  })
+  .catch((error) => {
+    console.error("Error updating document: ", error);
+  });
   }
   
-
   return (
     <View style={styles.container}>
       <KeyboardAvoidingView
@@ -31,7 +52,7 @@ const UpdateItem = ({ navigation, route }) => {
           keyboardShouldPersistTaps='handled'
         >
           <AboutSvg customStyles={styles.curyStyles} />
-          <Text style={{ textAlign: 'center', marginVertical: 10 }}>Editer Client: {item.intitule}</Text>
+          <Text style={{ textAlign: 'center', marginVertical: 20,fontFamily: 'TitilliumWeb_400Regular' }}>Client: {item.intitule}</Text>
           <View style={styles.formContainer}></View>
           <TextInput
             style={styles.input}
@@ -88,9 +109,10 @@ const UpdateItem = ({ navigation, route }) => {
             onChangeText={setTp}
           />
           <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-            <Text style={styles.buttonText}>Ajouter</Text>
+            <Text style={styles.buttonText}>Editer</Text>
           </TouchableOpacity>
         </ScrollView>
+        
       </KeyboardAvoidingView>
     </View>
   );

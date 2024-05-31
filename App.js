@@ -33,7 +33,7 @@ function HomeStack(){
     }}
     >
       <Stack.Screen name="Home" component={Home} />
-      <Stack.Screen name="updateItem" component={UpdateItem} />
+      <Stack.Screen name="updateItem" options={{ title: 'Editer' }} component={UpdateItem} />
     </Stack.Navigator>
   )
 }
