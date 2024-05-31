@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
-import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, FlatList, TouchableOpacity, Modal } from 'react-native';
 import { Searchbar, Divider,IconButton } from 'react-native-paper';
 import { Dimensions } from 'react-native';
 import AboutSvg from './aboutSvg';
@@ -16,7 +16,7 @@ const Home = ({navigation}) => {
   const [clients, setClients] = useState([]);
   const [searchText, setSearchText] = useState('');
   const [isLoading, setIsLoading] = useState(true);
-
+  const [modalVisible, setModalVisible] = useState(false);
   
 
   useEffect(() => {
@@ -54,8 +54,8 @@ const Home = ({navigation}) => {
       style={styles.item}
       onPress={() => setExpandedItem(item.id === expandedItem ? null : item.id)}
     >
-      <Text style={styles.text}>Contrat: {item.Num_contrat}</Text>
-      <Text style={styles.text}>Intitulé: {item.intitule}</Text>
+      <Text style={{color:'black'}}>Contrat: {item.Num_contrat}</Text>
+      <Text style={{color:'black'}}>Intitulé: {item.intitule}</Text>
       {expandedItem === item.id && (
         <View style={styles.itemContent}>
           <Text style={styles.text}>Addresse: {item.Adresse}</Text>
@@ -66,11 +66,11 @@ const Home = ({navigation}) => {
           <Text style={styles.text}>TC: {item.TC}</Text>
           {item.TP === '-' || item.TP === '' ? (''): (<Text style={styles.text}>TP: {item.TP}</Text>)}
           <Text style={styles.text}>Crée le: {item.CREATION}</Text>
-          <View style={{ position: 'absolute', right: 10, top:10 }}>
+          <View style={{ position: 'absolute', right: 10, top:12 }}>
             {/* <Feather name="edit" size={24} color="green" onPress={() => handleItemPress(item)} /> */}
-            <MaterialCommunityIcons name="file-edit-outline" size={24} color="green" 
+            <MaterialCommunityIcons name="file-edit" size={24} color="green" 
             style={{ position: 'absolute', right: 5, top:10 }} onPress={() => handleItemPress(item)} />
-            <MaterialCommunityIcons name="delete-outline" size={26} color="red" 
+            <MaterialCommunityIcons name="delete" size={26} color="red" 
             style={{position: 'absolute', right: 5, top:80}} onPress={() => handleDelete(item)} />
           </View>
         </View>
@@ -105,6 +105,27 @@ const Home = ({navigation}) => {
           ItemSeparatorComponent={() => <View style={{ height: 1 }} />}
         />
       )}
+
+<Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>Le champ Contrat est obligatoire.</Text>
+            <TouchableOpacity
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => setModalVisible(!modalVisible)}
+            >
+              <Text style={styles.textStyle}>OK</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -139,6 +160,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 14,
     fontFamily:'TitilliumWeb_400Regular',
+    color: "white",
   },
   curyStyles: {
     position: 'absolute',
@@ -151,14 +173,48 @@ const styles = StyleSheet.create({
   },
   itemContent: {
     marginTop: 10,
-    backgroundColor:'#e9ecef',
+    backgroundColor:'#191970',
     padding: 5,
     borderRadius: 10,
+    
   },
   railway: {
     fontSize: 20,
     marginVertical: 20,
     color: "black",
     fontFamily:'TitilliumWeb_400Regular'
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  buttonClose: {
+    backgroundColor: '#50C878',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
   },
 });

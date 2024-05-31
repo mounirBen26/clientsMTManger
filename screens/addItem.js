@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, Alert, Modal } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform,  Modal } from 'react-native';
 import AboutSvg from './aboutSvg';
 // import Modal from "react-native-modal";
 import { Dimensions } from 'react-native';
